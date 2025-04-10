@@ -87,10 +87,27 @@ struct OBB : public Shape
 /// <param name="subdvision">分割数</param>
 void DrawGrid(Camera* camera, uint32_t subdvision = 10);
 /// <summary>
+/// ベクトルの投影
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+Vector3 Project(const Vector3& v1, const Vector3& v2);
+/// <summary>
+/// ベクトルの最も近い点を取得
+/// </summary>
+/// <param name="point"></param>
+/// <param name="segment"></param>
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+/// <summary>
 /// ベクトルの垂直ベクトルを取得
 /// </summary>
 /// <param name="vector"></param>
 /// <returns></returns>
 Vector3 Perpendicular(const Vector3& vector);
-
+/// <summary>
+/// OBBのワールド行列を取得
+/// </summary>
+/// <param name="obb"></param>
+/// <returns></returns>
 Matrix4x4 MakeOBBWorldMatrix(const OBB& obb);
+

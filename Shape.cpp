@@ -73,6 +73,29 @@ void DrawGrid(Camera* camera, uint32_t subdvision) {
 	}
 }
 
+Vector3 Project(const Vector3& v1, const Vector3& v2)
+{
+	float t = Dot(v1, v2) / Dot(v2,v2);
+	Vector3 result = v2 * t;
+
+	return result;
+}
+
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
+{
+	// 点を直線での投影
+    Vector3 distance = point - segment.origin;
+	Vector3 project = Project(distance, segment.diff);
+	
+	float t = Dot(distance, segment.diff) / Dot(segment.diff, segment.diff);
+	// tの範囲を線分に収める
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	Vector3 result = segment.origin + segment.diff * t;
+
+	return result;
+}
+
 void Plane::Draw(Camera* camera, uint32_t color) {
 	Vector3 center = normal * distance;
 	Vector3 perpendiculars[4]{};
@@ -94,7 +117,7 @@ void Plane::Draw(Camera* camera, uint32_t color) {
 }
 
 void Sphere::Draw(Camera* camera, uint32_t color) {
-	const uint32_t kSubdivision = 32;
+	const uint32_t kSubdivision = 16;
 	const float kLonEvery = (2 * pi) / float(kSubdivision);
 	const float kLatEvery = pi / float(kSubdivision);
 
