@@ -236,6 +236,18 @@ Matrix4x4 Inverse(const Matrix4x4& matrix)
 	return result;
 }
 
+Matrix4x4 Transpose(const Matrix4x4& m)
+{
+	Matrix4x4 result;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = m.m[j][i];
+		}
+	}
+
+	return result;
+}
+
 Matrix4x4 MakeScaleMatrix(const Vector3& scale)
 {
 	Matrix4x4 result = {
@@ -311,6 +323,28 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate)
 	return result;
 }
 
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2)
+{
+	Matrix4x4 result;
+    for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = m1.m[i][j] + m2.m[i][j];
+		}
+	}
+	return result;
+}
+
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2)
+{
+	Matrix4x4 result;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[i][j] = m1.m[i][j] - m2.m[i][j];
+		}
+	}
+	return result;
+}
+
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
 	result.m[0][0] = m1.m[0][0] * m2.m[0][0] + m1.m[0][1] * m2.m[1][0] + m1.m[0][2] * m2.m[2][0] + m1.m[0][3] * m2.m[3][0];
@@ -361,6 +395,19 @@ float Cross(const Vector2& v1, const Vector2& v2)
 float Dot(const Vector2& v1, const Vector2& v2)
 {
 	return v1.x * v2.x + v1.y * v2.y;
+}
+
+Matrix4x4 MakeIdentity4x4()
+{
+	Matrix4x4 result = {
+		{
+			1.0f,0.0f,0.0f,0.0f,
+			0.0f,1.0f,0.0f,0.0f,
+			0.0f,0.0f,1.0f,0.0f,
+			0.0f,0.0f,0.0f,1.0f
+		}
+	};
+	return result;
 }
 
 Vector3 Transform(const Vector3& v, const Matrix4x4& m) {
@@ -420,4 +467,14 @@ void NoviceUtility::VectorScreenPrintf(int x, int y, const Vector3& vector, cons
 	Novice::ScreenPrintf(x + kColumnWidth, y, "%.02f", vector.y);
     Novice::ScreenPrintf(x + kColumnWidth * 2, y, "%.02f", vector.z);
 	Novice::ScreenPrintf(x + kColumnWidth * 3, y, "%s", label);
+}
+
+void NoviceUtility::MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix,const char* label)
+{
+	Novice::ScreenPrintf(x, y, "%s", label);
+	for (int row = 0; row < 4; ++row) {
+		for (int col = 0; col < 4; ++col) {
+			Novice::ScreenPrintf(x + col * kColumnWidth, y + row * kRowHeight + kRowHeight, "%6.02f", matrix.m[row][col]);
+		}
+	}
 }
