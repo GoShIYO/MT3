@@ -18,13 +18,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
-
+	// カメラの初期状態
 	Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
 	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
-
+	// デバッグカメラ
 	DebugCamera debugCamera;
 	debugCamera.Initialize(cameraPosition);
-
+	// カメラの取得
 	Camera* camera = debugCamera.GetCamera();
 	camera->SetRotate(cameraRotate);
 
@@ -32,7 +32,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{ 0.0f,0.0f,0.0f},
 		1.0f
 	};
-
+	//DebugCameraを更新するかどうかを切り替えるフラグ
 	bool isUseCameraMotion = false;
 
 	// ウィンドウの×ボタンが押されるまでループ
