@@ -1,11 +1,13 @@
 #include <Novice.h>
-#include"MathFunc.h"
+#include"Shape.h"
+#include<memory>
+#include"DebugCamera.h"
+#define USE_IMGUI
+#include"2d/ImGuiManager.h"
 
 const char kWindowTitle[] = "LE2A_20_リショウコウ";
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
-
-using namespace NoviceUtility;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -17,17 +19,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	// 変数の初期化
-	Vector3 v1{ 1.0f,3.0f,-5.0f };
-	Vector3 v2{ 4.0f,-1.0f,2.0f };
-	float k = 4.0f;
+	Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
 
-	Vector3 resultAdd = Add(v1, v2);			//加法
-	Vector3 resultSubtract = Subtract(v1, v2);	//減法
-	Vector3 resultMultiply = Multiply(k, v1);	//乗法
-	float resultDot = Dot(v1, v2);				//内積
-	float resultLength = Length(v1);			//長さ
-	Vector3 resultNormalize = Normalize(v2);	//正規化
+	DebugCamera debugCamera;
+	debugCamera.Initialize(cameraPosition);
+
+	Camera* camera = debugCamera.GetCamera();
+	camera->SetRotate(cameraRotate);
+
+	Sphere sphere = {
+		{ 0.0f,0.0f,0.0f},
+		1.0f
+	};
+
+	bool isUseCameraMotion = false;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -42,6 +48,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		ImGui::DragFloat3("CameraTranslate", &cameraPosition.x, 0.01f);
+        ImGui::DragFloat3("CameraRotate", &cameraRotate.x, 0.01f);
+		ImGui::DragFloat3("SphereCenter", &sphere.center.x, 0.01f);
+        ImGui::DragFloat("SphereRadius", &sphere.radius, 0.01f,0.1f,10.0f);
+        ImGui::Checkbox("UseCameraMotion", &isUseCameraMotion);
+		if (!isUseCameraMotion) {
+			camera->SetCameraPosition(cameraPosition);
+			camera->SetRotate(cameraRotate);
+		}
+		debugCamera.Update(keys,isUseCameraMotion);
+		
 		///
 		/// ↑更新処理ここまで
 		///
@@ -49,14 +66,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
-		VectorScreenPrintf(0, 0, resultAdd, " : Add");
-		VectorScreenPrintf(0, kRowHeight, resultSubtract, " : Subtract");
-        VectorScreenPrintf(0, kRowHeight * 2, resultMultiply, " : Multiply");
-		Novice::ScreenPrintf(0, kRowHeight * 3, "%.02f : Dot", resultDot);
-        Novice::ScreenPrintf(0, kRowHeight * 4, "%.02f : Length", resultLength);
-		VectorScreenPrintf(0, kRowHeight * 5, resultNormalize, " : Normalize");
-
+		DrawGrid(camera);
+		sphere.Draw(camera, 0xffffffff);
 		///
 		/// ↑描画処理ここまで
 		///

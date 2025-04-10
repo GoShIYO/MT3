@@ -3,12 +3,16 @@
 #include"Matrix4x4.h"
 #include"Vector2.h"
 #include"Vector3.h"
+#include"Vector4.h"
 
 static const float pi = 3.14159265358979323846f;
 namespace NoviceUtility {
 	static const int kColumnWidth = 60;
 	static const int kRowHeight = 20;
+	//ベクトルを画面に表示する関数
 	void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
+	//マトリックスを画面に表示する関数
+	void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* label);
 }
 
 //
@@ -83,7 +87,6 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height,fl
 /// <param name="translate"></param>
 /// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
-Matrix4x4 Inverse(const Matrix4x4& matrix);
 /// <summary>
 /// スケール行列作る関数
 /// </summary>
@@ -120,17 +123,64 @@ Matrix4x4 MakeRotateMatrix(const Vector3& axis);
 /// <param name="translate"></param>
 /// <returns></returns>
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
-
+/// <summary>
+/// 行列の加法
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
+/// <summary>
+/// 行列の減法
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
+/// <summary>
+/// 行列の積
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-
+/// <summary>
+/// 逆行列
+/// </summary>
+/// <param name="matrix"></param>
+/// <returns></returns>
+Matrix4x4 Inverse(const Matrix4x4& matrix);
+/// <summary>
+/// 転置行列
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
+Matrix4x4 Transpose(const Matrix4x4& m);
+/// <summary>
+/// 単位行列作る
+/// </summary>
+/// <returns></returns>
+Matrix4x4 MakeIdentity4x4();
+/// <summary>
+/// 4x4行列の変換
+/// </summary>
 Vector3 Transform(const Vector3& v, const Matrix4x4& m);
+//正規化
 Vector3 Normalize(const Vector3& v);
+//加法
 Vector3 Add(const Vector3& v1, const Vector3& v2);
+//減法
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
+//乗算
 Vector3 Multiply(float s,const Vector3& v1);
+//長さ
 float Length(const Vector3& v);
+//外積
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
+//内積
 float Dot(const Vector3& v1, const Vector3& v2);
 
+//4次元ベクトル変換
+Vector4 Transform(const Vector4& v, const Matrix4x4& m);
 constexpr float ConvertToRadians(float degrees) noexcept { return degrees * (pi / 180.0f); }
 constexpr float ConvertToDegrees(float radians) noexcept { return radians * (180.0f / pi); }
