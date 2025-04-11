@@ -3,6 +3,7 @@
 #include"DebugCamera.h"
 #define USE_IMGUI
 #include"2d/ImGuiManager.h"
+#include"MathFunc.h"
 
 const char kWindowTitle[] = "LE2A_20_リショウコウ";
 const int kWindowWidth = 1280;
