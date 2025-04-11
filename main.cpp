@@ -30,9 +30,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	bool isUseCameraMotion = false;
 
-	Sphere sphere = {
-		{0.0f,0.0f,0.0f},
-		0.6f
+	Segment segment = {
+		{0.45f,0.41f,0.0f},
+		{1.0f,0.5f,0.0f}
 	};
 	
 	Plane plane = {
@@ -53,14 +53,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		debugCamera.Update(keys,isUseCameraMotion);
 
-		ImGui::DragFloat3("SphereA.center", &sphere.center.x, 0.01f);
-		ImGui::DragFloat("SphereA.radius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("Segment.origin", &segment.origin.x, 0.01f);
+		ImGui::DragFloat3("Segment.diff", &segment.diff.x, 0.01f);
 		ImGui::DragFloat3("Plane.normal", &plane.normal.x, 0.01f);
         ImGui::DragFloat("Plane.distance", &plane.distance, 0.01f);
 		ImGui::Checkbox("isUseCameraMotion", &isUseCameraMotion);
 		plane.normal = Normalize(plane.normal);
 
-		bool isCollision = IsCollision(sphere, plane);
+		bool isCollision = IsCollision(segment, plane);
 
 
 		///
@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(camera);
-		sphere.Draw(camera, isCollision ? RED : WHITE);
+		segment.Draw(camera, isCollision ? RED : WHITE);
 		plane.Draw(camera, WHITE);
 
 		///
