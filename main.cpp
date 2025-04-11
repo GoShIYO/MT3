@@ -30,16 +30,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	
 	bool isUseCameraMotion = false;
 
-	Sphere sphereA = {
+	Sphere sphere = {
 		{0.0f,0.0f,0.0f},
-		1.0f
-	};
-
-	Sphere sphereB = {
-		{0.8f,0.0f,1.0f},
-		0.5f
+		0.6f
 	};
 	
+	Plane plane = {
+		{0.0f,1.0f,0.0f},
+		1.0f
+	};
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -54,13 +53,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		debugCamera.Update(keys,isUseCameraMotion);
 
-		ImGui::DragFloat3("SphereA.center", &sphereA.center.x, 0.01f);
-		ImGui::DragFloat("SphereA.radius", &sphereA.radius, 0.01f);
-		ImGui::DragFloat3("SphereB.center", &sphereB.center.x, 0.01f);
-        ImGui::DragFloat("SphereB.radius", &sphereB.radius, 0.01f);
+		ImGui::DragFloat3("SphereA.center", &sphere.center.x, 0.01f);
+		ImGui::DragFloat("SphereA.radius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("Plane.normal", &plane.normal.x, 0.01f);
+        ImGui::DragFloat("Plane.distance", &plane.distance, 0.01f);
 		ImGui::Checkbox("isUseCameraMotion", &isUseCameraMotion);
+		plane.normal = Normalize(plane.normal);
 
-		bool isCollision = IsCollision(sphereA, sphereB);
+		bool isCollision = IsCollision(sphere, plane);
 
 
 		///
@@ -72,8 +72,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(camera);
-		sphereA.Draw(camera, isCollision ? RED : WHITE);
-		sphereB.Draw(camera, WHITE);
+		sphere.Draw(camera, isCollision ? RED : WHITE);
+		plane.Draw(camera, WHITE);
 
 		///
 		/// ↑描画処理ここまで
