@@ -1,11 +1,14 @@
 #include <Novice.h>
+#include"Shape.h"
+#include"DebugCamera.h"
+#define USE_IMGUI
+#include"2d/ImGuiManager.h"
 #include"MathFunc.h"
+#include"ShapeCollision.h"
 
 const char kWindowTitle[] = "LE2A_20_リショウコウ";
 const int kWindowWidth = 1280;
 const int kWindowHeight = 720;
-
-using namespace NoviceUtility;
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -16,19 +19,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
+	// デバッグカメラ
+	Vector3 cameraPosition = { 0.0f,1.9f,-6.49f };
+	Vector3 cameraRotate = { 0.26f,0.0f,0.0f };
+	DebugCamera debugCamera;
+	debugCamera.Initialize(cameraPosition);
+	// カメラ
+	Camera* camera = debugCamera.GetCamera();
+	camera->SetRotate(cameraRotate);
+	
+	bool isUseCameraMotion = false;
 
-	// 変数の初期化
-	Vector3 v1{ 1.0f,3.0f,-5.0f };
-	Vector3 v2{ 4.0f,-1.0f,2.0f };
-	float k = 4.0f;
+	Sphere sphereA = {
+		{0.0f,0.0f,0.0f},
+		1.0f
+	};
 
-	Vector3 resultAdd = Add(v1, v2);			//加法
-	Vector3 resultSubtract = Subtract(v1, v2);	//減法
-	Vector3 resultMultiply = Multiply(k, v1);	//乗法
-	float resultDot = Dot(v1, v2);				//内積
-	float resultLength = Length(v1);			//長さ
-	Vector3 resultNormalize = Normalize(v2);	//正規化
-
+	Sphere sphereB = {
+		{0.8f,0.0f,1.0f},
+		0.5f
+	};
+	
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -41,6 +52,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+		debugCamera.Update(keys,isUseCameraMotion);
+
+		ImGui::DragFloat3("SphereA.center", &sphereA.center.x, 0.01f);
+		ImGui::DragFloat("SphereA.radius", &sphereA.radius, 0.01f);
+		ImGui::DragFloat3("SphereB.center", &sphereB.center.x, 0.01f);
+        ImGui::DragFloat("SphereB.radius", &sphereB.radius, 0.01f);
+		ImGui::Checkbox("isUseCameraMotion", &isUseCameraMotion);
+
+		bool isCollision = IsCollision(sphereA, sphereB);
+
 
 		///
 		/// ↑更新処理ここまで
@@ -49,13 +70,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
-		VectorScreenPrintf(0, 0, resultAdd, " : Add");
-		VectorScreenPrintf(0, kRowHeight, resultSubtract, " : Subtract");
-        VectorScreenPrintf(0, kRowHeight * 2, resultMultiply, " : Multiply");
-		Novice::ScreenPrintf(0, kRowHeight * 3, "%.02f : Dot", resultDot);
-        Novice::ScreenPrintf(0, kRowHeight * 4, "%.02f : Length", resultLength);
-		VectorScreenPrintf(0, kRowHeight * 5, resultNormalize, " : Normalize");
+		
+		DrawGrid(camera);
+		sphereA.Draw(camera, isCollision ? RED : WHITE);
+		sphereB.Draw(camera, WHITE);
 
 		///
 		/// ↑描画処理ここまで
