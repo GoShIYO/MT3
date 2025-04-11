@@ -21,6 +21,18 @@
       <Filter>KamataEngine\Adapter</Filter>
     </ClCompile>
     <ClCompile Include="MathFunc.cpp" />
+    <ClCompile Include="Camera.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeCollision.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -109,5 +121,9 @@
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Matrix3x3.h" />
     <ClInclude Include="Matrix4x4.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="ShapeCollision.h" />
   </ItemGroup>
 </Project>
