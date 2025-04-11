@@ -4,6 +4,7 @@
 #define USE_IMGUI
 #include"2d/ImGuiManager.h"
 #include"MathFunc.h"
+#include"ShapeCollision.h"
 
 const char kWindowTitle[] = "LE2A_20_リショウコウ";
 const int kWindowWidth = 1280;
@@ -26,17 +27,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// カメラ
 	Camera* camera = debugCamera.GetCamera();
 	camera->SetRotate(cameraRotate);
-	// 線分
-	Segment segment = { {-2.0f,-1.0f,0.0f},{3.0f,2.0f,2.0f} };
-	Vector3 point = { -1.5f,0.6f,0.6f };
-	// 点が線分での投影と最近接点
-	Vector3 project = Project(point - segment.origin, segment.diff);
-	Vector3 closestPoint = ClosestPoint(point, segment);
-	// 最近接点を小さい球で描画
-	Sphere pointSphere = { point,0.01f };
-	Sphere closestPointSphere = { closestPoint,0.01f };
-
+	
 	bool isUseCameraMotion = false;
+
+	Sphere sphereA = {
+		{0.0f,0.0f,0.0f},
+		1.0f
+	};
+
+	Sphere sphereB = {
+		{0.8f,0.0f,1.0f},
+		0.5f
+	};
+	
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -49,15 +52,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+		debugCamera.Update(keys,isUseCameraMotion);
 
-		debugCamera.Update(keys, isUseCameraMotion);
-		ImGui::DragFloat3("Point", &pointSphere.center.x, 0.01f);
-		ImGui::DragFloat3("Segment origin", &segment.origin.x, 0.01f);
-        ImGui::DragFloat3("Segment diff", &segment.diff.x, 0.01f);
-		ImGui::InputFloat3("Project", &project.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
-		ImGui::Checkbox("Use Camera Motion", &isUseCameraMotion);
-		// 最近接点を更新
-		closestPointSphere.center = ClosestPoint(point, segment);
+		ImGui::DragFloat3("SphereA.center", &sphereA.center.x, 0.01f);
+		ImGui::DragFloat("SphereA.radius", &sphereA.radius, 0.01f);
+		ImGui::DragFloat3("SphereB.center", &sphereB.center.x, 0.01f);
+        ImGui::DragFloat("SphereB.radius", &sphereB.radius, 0.01f);
+		ImGui::Checkbox("isUseCameraMotion", &isUseCameraMotion);
+
+		bool isCollision = IsCollision(sphereA, sphereB);
+
 
 		///
 		/// ↑更新処理ここまで
@@ -68,9 +72,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		DrawGrid(camera);
-		segment.Draw(camera, WHITE);
-		pointSphere.Draw(camera, RED);
-        closestPointSphere.Draw(camera, BLACK);
+		sphereA.Draw(camera, isCollision ? RED : WHITE);
+		sphereB.Draw(camera, WHITE);
 
 		///
 		/// ↑描画処理ここまで

@@ -175,6 +175,8 @@ Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 Vector3 Multiply(float s,const Vector3& v1);
 //長さ
 float Length(const Vector3& v);
+//長さの2乗
+float LengthSq(const Vector3& v);
 //外積
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 //内積
